@@ -1,0 +1,7 @@
+- name: Configure gateway
+  hosts: gateway
+  tasks:
+          - name: Config private interface
+            net_interface:
+                    name: eth0
+                    description: private interface of gateway
