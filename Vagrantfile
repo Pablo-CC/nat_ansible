@@ -3,7 +3,13 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
+
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+#Misma clave para todas las máquinas
+config.ssh.insert_key = false
+
  config.vm.define "gateway" do |host|
   host.vm.hostname = "gateway"
   host.vm.box = "ubuntu/trusty64"
