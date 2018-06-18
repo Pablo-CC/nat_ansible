@@ -8,24 +8,23 @@
                      value="1"
                      state="present"
                      reload="yes"
-          - name: Install required packages
-            apt: pkg={{ item }}
-            with_items:
-                    - libnm-glib-dev
-                    - network-manager
-                    - dbus
-#          - name: Create interface
-#            nmcli:
-#                    conn_name: eth1
-#                    ip4: 192.168.10.1/24
-#                    state: present
-#
 
-          - name: Cheat creating interface
-            command: '{{ item }}'
-            with_items:
-                    - "ifconfig eth1 up"
-                    - "ifconfig eth1 192.168.10.1"
+          - name: Create interface
+            net_interface:
+                    name: eth1
+                    state: up
+
+          - name: Assign IP address to new interface
+            net_l3_interface:
+                    name: eth1
+                    ipv4: 192.168.10.2/24
+
+
+#          - name: Cheat creating interface
+#            command: '{{ item }}'
+#            with_items:
+#                    - "ifconfig eth1 up"
+#                    - "ifconfig eth1 192.168.10.1"
 
           - name: Configuring NAT functioning
             iptables:
@@ -36,4 +35,27 @@
                     jump: MASQUERADE
 
 
+- name: Configure hostA
+  hosts: hostA
+  become: True
+  tasks:
+          - name: Cheat creating interface
+            command: '{{ item }}'
+            with_items:
+                    - "ifconfig eth1 up"
+                    - "ifconfig eth1 192.168.10.2"
+
+          - name: Delete default static route
+            net_static_route:
+                    prefix: 0.0.0.0
+                    mask: 0.0.0.0
+                    gateway: 10.0.2.2
+                    state: absent
+
+          - name: Add default static route through gateway
+            net_static_route:
+                    prefix: 0.0.0.0
+                    mask: 0.0.0.0
+                    gateway: 192.168.10.1
+                    state: present
 
