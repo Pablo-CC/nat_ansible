@@ -1,7 +1,39 @@
 - name: Configure gateway
   hosts: gateway
+  become: True
   tasks:
-          - name: Config private interface
-            net_interface:
-                    name: eth0
-                    description: private interface of gateway
+          - name: Set IP forwarding
+            sysctl:
+                     name="net.ipv4.ip_forward"
+                     value="1"
+                     state="present"
+                     reload="yes"
+          - name: Install required packages
+            apt: pkg={{ item }}
+            with_items:
+                    - libnm-glib-dev
+                    - network-manager
+                    - dbus
+#          - name: Create interface
+#            nmcli:
+#                    conn_name: eth1
+#                    ip4: 192.168.10.1/24
+#                    state: present
+#
+
+          - name: Cheat creating interface
+            command: '{{ item }}'
+            with_items:
+                    - "ifconfig eth1 up"
+                    - "ifconfig eth1 192.168.10.1"
+
+          - name: Configuring NAT functioning
+            iptables:
+                    table: nat
+                    action: append
+                    chain:  POSTROUTING
+                    out_interface: eth0
+                    jump: MASQUERADE
+
+
+
