@@ -35,13 +35,13 @@ host.vm.provider :virtualbox do |vb|
 ~~~
 We only allow the VMs to communicate with each other.
 
-###inventory###
+### inventory ###
 Ansible needs to know about the existence of both remote machines and how to connect with them via SSH. This files does that.
 
-###ansible.cfg###
+### ansible.cfg ###
 In this file we just define some default configuration parameters for Ansible.
 
-###playbook.yml###
+### playbook.yml ###
 This file contains all the tasks executed by Ansible on the remote hosts. Some comments on this tasks:
 
 *gateway's private interface (name eth1) is defined using a template file with the configuration parameters that will be located on the VM in /etc/network/interfaces.d/eth1.cfg. These changes will be made after executing ~~~ifup eth1~~~
@@ -50,13 +50,13 @@ This file contains all the tasks executed by Ansible on the remote hosts. Some c
 *the _with_items_ clause is used to perform loops in a task (i.e: execute the task multiple times changing its parameters).
 
 
-###Execution###
+### Execution ###
 ~~~
 vagrant up
 ansible-playbook playbook.yml
 ~~~
 
-###Test###
+### Test ###
 You can connect using SSH to one of the VMs with:
 ~~~
 vagrant ssh hostA | gateway
