@@ -9,24 +9,13 @@
                      state="present"
                      reload="yes"
 
-          - name: Create interface
-            net_interface:
-                    name: eth1
-                    state: up
+          - name: Template eth1 file with private interface configuration
+            template:
+                    src: files/gw_eth1.cfg
+                    dest: /etc/network/interfaces.d/eth1.cfg
+            notify: ifup eth1
 
-          - name: Assign IP address to new interface
-            net_l3_interface:
-                    name: eth1
-                    ipv4: 192.168.10.2/24
-
-
-#          - name: Cheat creating interface
-#            command: '{{ item }}'
-#            with_items:
-#                    - "ifconfig eth1 up"
-#                    - "ifconfig eth1 192.168.10.1"
-
-          - name: Configuring NAT functioning
+          - name: Configure NAT functioning
             iptables:
                     table: nat
                     action: append
@@ -35,27 +24,37 @@
                     jump: MASQUERADE
 
 
+  handlers:
+          - name: ifup eth1
+            command: "ifup eth1"
+          
 - name: Configure hostA
   hosts: hostA
   become: True
   tasks:
-          - name: Cheat creating interface
-            command: '{{ item }}'
+          - name: Add a line to interfaces file
+            lineinfile:
+                    path: /etc/network/interfaces
+                    line: "{{ item }}"
             with_items:
-                    - "ifconfig eth1 up"
-                    - "ifconfig eth1 192.168.10.2"
+                    - auto eth1
+                    - iface eth1 inet static
+          
+          - name: Configure eth1 interface
+            interfaces_file:
+                    iface: eth1
+                    option: "{{ item.option }}"
+                    value: "{{ item.value }}"
+            with_items:
+                    - { option: 'address', value: '192.168.10.2' }
+                    - { option: 'network', value: '192.168.10.0' }
+                    - { option: 'netmask', value: '255.255.255.0' }
+                    - { option: 'up', value: 'route del default dev eth0' }
+                    - { option: 'up', value: 'route add default gw 192.168.10.1 dev eth1' }
 
-          - name: Delete default static route
-            net_static_route:
-                    prefix: 0.0.0.0
-                    mask: 0.0.0.0
-                    gateway: 10.0.2.2
-                    state: absent
+            notify: ifup eth1
 
-          - name: Add default static route through gateway
-            net_static_route:
-                    prefix: 0.0.0.0
-                    mask: 0.0.0.0
-                    gateway: 192.168.10.1
-                    state: present
-
+  handlers:
+          - name: ifup eth1
+            command: "ifup eth1"
+    
