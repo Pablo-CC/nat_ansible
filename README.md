@@ -3,9 +3,9 @@
 The goal of this task is to build a virtual environment using Vagrant and authomatize the whole deployment with Ansible. The environment will consist of two machines: one will be a regular host and the other one will act as a gateway for external connections.
 
 ## Requirements ##
-*Vagrant
-*VirtualBox
-*Ansible
+* Vagrant
+* VirtualBox
+* Ansible
 
 
 ## Network infraestructure ##
@@ -13,13 +13,13 @@ In the virtual environment we will see two networks.
 #### 10.0.0.0/16 ####
 This network is shared by VirtualBox and both VM. VirtualBox acts like a router between your PC and the Virtual Env. This network is already deployed by Vagrant.
 IP addresses:
-*10.0.2.2 -> VirtualBox
-*10.0.0.15 -> hostA and gateway
+* 10.0.2.2 -> VirtualBox
+* 10.0.0.15 -> hostA and gateway
 #### 192.168.10.0/24 ####
 This is the private network we have to configure with Ansible. It will be shared by hostA and gateway.
 IP addresses:
-*192.168.10.1 -> gateway
-*192.168.10.2 -> hostA
+* 192.168.10.1 -> gateway
+* 192.168.10.2 -> hostA
 
 By default, Vagrant will configure both hosts to send external packets through *10.0.2.2* (VirtualBox) so we have to configure hostA's IP static route table so that it sends them through gateway (using Ansible's __interfaces_file__ module). We will also activate IP Forwarding on gateway and use __iptable__ module to provide NAT functioning.
 
