@@ -44,10 +44,10 @@ In this file we just define some default configuration parameters for Ansible.
 ### playbook.yml ###
 This file contains all the tasks executed by Ansible on the remote hosts. Some comments on this tasks:
 
-*gateway's private interface (name eth1) is defined using a template file with the configuration parameters that will be located on the VM in /etc/network/interfaces.d/eth1.cfg. These changes will be made after executing ~~~ifup eth1~~~
-*hostA's private interface (name eth1) is defined using Ansible's __interfaces_file__ module wich modifies /etc/network/interfaces file in the VM. Once again, we need to execute ~~~ifup eth1~~~. Note we first need to add two lines to this file (using __lineinfile__ module) so that the VM recognizes the interface.
-*hanlders are executed by __notify__ clauses only if the task applys any changes in the remote machine.
-*the _with_items_ clause is used to perform loops in a task (i.e: execute the task multiple times changing its parameters).
+* gateway's private interface (name eth1) is defined using a template file with the configuration parameters that will be located on the VM in /etc/network/interfaces.d/eth1.cfg. These changes will be made after executing ~~~ifup eth1~~~
+* hostA's private interface (name eth1) is defined using Ansible's __interfaces_file__ module wich modifies /etc/network/interfaces file in the VM. Once again, we need to execute ~~~ifup eth1~~~. Note we first need to add two lines to this file (using __lineinfile__ module) so that the VM recognizes the interface.
+* hanlders are executed by __notify__ clauses only if the task applys any changes in the remote machine.
+* the _with_items_ clause is used to perform loops in a task (i.e: execute the task multiple times changing its parameters).
 
 
 ### Execution ###
