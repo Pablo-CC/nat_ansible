@@ -65,7 +65,7 @@ You should see the shell login screen.
 To verifiy that the playbook does what it should you can ping from hostA to any public IP.
 For example:
 ~~~
-ping www.aupaathletic.com -c 1
+ping www.athletic-club.net -c 1
 ~~~
 
 The ping should work without problems. You can capture the ping in one of gateway's interfaces using tcpdump:
